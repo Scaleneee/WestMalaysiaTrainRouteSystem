@@ -1,14 +1,13 @@
-package trainsystem;
+package com.trainsystem.graph;
 
 import java.util.List;
 import java.util.Set;
 
-public interface Graph<V> {
+public interface Graph<V, E extends Edge<V>> {
 
     /*
         Vertex Operation Methods
      */
-
     // return the number of vertices
     int getSize();
 
@@ -31,7 +30,7 @@ public interface Graph<V> {
     boolean containsEdge(V source, V destination);
 
     // add a directed edge
-    boolean addEdge(V source, V destination, int duration, double price, int distance);
+    boolean addEdge(V source, E edge);
 
     // remove a directed edge
     boolean removeEdge(V source, V destination);

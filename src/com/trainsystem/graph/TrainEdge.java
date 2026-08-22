@@ -1,6 +1,6 @@
-package trainsystem;
+package com.trainsystem.graph;
 
-public class TrainEdge<V> {
+public class TrainEdge<V> implements Edge<V> {
     // the source will always be the vertex in the adjacency list
     // store the destination of the graph
     private V destination;
@@ -11,15 +11,11 @@ public class TrainEdge<V> {
     // ticket price from vertex to the destination
     private double price;
 
-    // store the distance in kilometers (km)
-    private int distance;
-
     // constructor
-    public TrainEdge(V destination, int duration, double price, int distance) {
+    public TrainEdge(V destination, int duration, double price) {
         this.destination = destination;
         this.duration = duration;
         this.price = price;
-        this.distance = distance;
     }
 
     // getter methods
@@ -35,7 +31,4 @@ public class TrainEdge<V> {
         return price;
     }
 
-    public int getDistance() {
-        return distance;
-    }
 }
