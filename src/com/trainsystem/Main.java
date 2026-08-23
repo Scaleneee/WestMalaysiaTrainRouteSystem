@@ -3,12 +3,12 @@ package com.trainsystem;
 import com.trainsystem.graph.TrainGraph;
 
 import java.util.Scanner;
-import java.util.Set;
 
 import com.trainsystem.model.Station;
 import com.trainsystem.ui.UIHelper;
 import com.trainsystem.ui.screen.RouteMenu;
 import com.trainsystem.ui.screen.StationMenu;
+import com.trainsystem.ui.screen.TrainNetworkWindow;
 
 public class Main {
 
@@ -192,6 +192,7 @@ public class Main {
                     break;
                 case 4:
                     // display train network
+                    TrainNetworkWindow.showNetwork(GRAPH);
                     break;
                 default:
                     // choice = 0, exit
@@ -199,6 +200,4 @@ public class Main {
             }
         } while (choice != 0);
     }
-
-
 }
