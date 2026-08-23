@@ -240,7 +240,6 @@ public class RouteMenu {
                         route.getDuration(),
                         route.getPrice()
                 );
-                number++;
             }
         }
         // divider

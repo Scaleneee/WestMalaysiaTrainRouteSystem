@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.trainsystem.model.Station;
 import com.trainsystem.ui.UIHelper;
+import com.trainsystem.ui.screen.GraphDisplay;
 import com.trainsystem.ui.screen.RouteMenu;
 import com.trainsystem.ui.screen.StationMenu;
 
@@ -192,6 +193,7 @@ public class Main {
                     break;
                 case 4:
                     // display train network
+                    new GraphDisplay(SCANNER, GRAPH).start();
                     break;
                 default:
                     // choice = 0, exit

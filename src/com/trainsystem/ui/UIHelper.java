@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class UIHelper {
 
     private static final int WIDTH = 70;
+    private static final String BLUE = "\u001B[34m";
     private static final String GREEN = "\u001B[32m";
     private static final String YELLOW = "\u001B[33m";
     private static final String RED = "\u001B[31m";
@@ -126,6 +127,10 @@ public class UIHelper {
     }
 
     // print message
+    public static void printInfo(String message) {
+        System.out.println(BLUE + "\n[INFO] " + message + RESET);
+    }
+
     public static void printSuccess(String message) {
         System.out.println(GREEN + "\n[SUCCESS] " + message + RESET);
     }

@@ -26,6 +26,9 @@ public interface Graph<V, E extends Edge<V>> {
     /*
         Edges Operation Methods
      */
+    // return the number of edges
+    int getEdgeCount();
+
     // check whether an edge exists
     boolean containsEdge(V source, V destination);
 
@@ -58,5 +61,7 @@ public interface Graph<V, E extends Edge<V>> {
     void clear();
 
     // graph traversal algorithm
-    // BFS
+    // BFS, get the shortest path result
+    List<V> bfs(V start, V destination);
+
 }
