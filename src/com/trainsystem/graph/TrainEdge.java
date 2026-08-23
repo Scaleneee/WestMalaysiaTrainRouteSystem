@@ -30,5 +30,4 @@ public class TrainEdge<V> implements Edge<V> {
     public double getPrice() {
         return price;
     }
-
 }

@@ -10,6 +10,7 @@ public class UIHelper {
     private static final String RED = "\u001B[31m";
     private static final String RESET = "\u001B[0m";
 
+    // title
     public static void printTitle(String title) {
         System.out.println();
         // print 50 '-'
@@ -26,6 +27,7 @@ public class UIHelper {
         System.out.println("-".repeat(WIDTH));
     }
 
+    // get user choice, include validation checking
     public static int getMenuChoice(Scanner scanner, int max) {
         while (true) {
             System.out.print("Enter choice: ");
@@ -71,6 +73,59 @@ public class UIHelper {
         }
     }
 
+    public static int getPositiveInteger(Scanner scanner, String message) {
+        while (true) {
+            System.out.print(message);
+
+            // get the input as a String
+            String input = scanner.nextLine().trim();
+
+            try {
+                // convert to integer
+                int duration = Integer.parseInt(input);
+
+                if (duration > 0) {
+                    // if non-negative
+                    return duration;
+                }
+
+                // if negative
+                printError("Duration must be greater than 0.");
+
+            } catch (NumberFormatException e) {
+                // the duration entered contain non-digit character
+                printError("Please enter a valid whole number.");
+            }
+        }
+    }
+
+    public static double getPositiveDouble(Scanner scanner, String message) {
+        while (true) {
+            System.out.print(message);
+
+            // get input as a String
+            String input = scanner.nextLine().trim();
+
+            try {
+                // convert to double
+                double fare = Double.parseDouble(input);
+
+                // if non-negative value return it
+                if (fare > 0) {
+                    return fare;
+                }
+
+                // if is a negative value
+                printError("Ticket fare must be greater than RM 0.");
+
+            } catch (NumberFormatException e) {
+                // if the ticket fare contains non-digit character
+                printError("Please enter a valid ticket fare.");
+            }
+        }
+    }
+
+    // print message
     public static void printSuccess(String message) {
         System.out.println(GREEN + "\n[SUCCESS] " + message + RESET);
     }
@@ -84,6 +139,7 @@ public class UIHelper {
         System.out.println(RED + "\n[ERROR] " + message + RESET);
     }
 
+    // pause the screen before go to other screen
     public static void pause(Scanner scanner) {
         System.out.println();
         System.out.print("Press Enter to continue...");

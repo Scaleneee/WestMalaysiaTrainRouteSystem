@@ -35,6 +35,9 @@ public interface Graph<V, E extends Edge<V>> {
     // remove a directed edge
     boolean removeEdge(V source, V destination);
 
+    // return an edge, based on source and destination
+    E getEdge(V source, V destination);
+
     /*
         Neighbors Operation Methods
      */

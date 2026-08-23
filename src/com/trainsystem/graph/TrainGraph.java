@@ -37,4 +37,15 @@ public class TrainGraph extends AbstractGraph<Station, TrainEdge<Station>> {
 
         return null;
     }
+
+    public Station getStationByCode(String stationCode) {
+
+        for (Station station : getVertices()) {
+            if (station.getStationCode().equalsIgnoreCase(stationCode)) {
+                return station;
+            }
+        }
+
+        return null;
+    }
 }
