@@ -60,6 +60,19 @@ public class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
         return true;
     }
 
+    @Override
+    public int getEdgeCount() {
+        // store the edge count
+        int count = 0;
+
+        for (V vertex : getVertices()) {
+            // get all the edge of each vertex
+            List<E> edges = adjacencyList.get(vertex);
+            count += edges.size();
+        }
+        return count;
+    }
+
     /*
         Edges Operation Methods
      */
@@ -190,10 +203,8 @@ public class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
         adjacencyList.clear();
     }
 
-    /*
-        Tree class
-     */
-    public static class Tree<V> {
-
+    @Override
+    public List<V> bfs(V start, V destination) {
+        return List.of();
     }
 }
