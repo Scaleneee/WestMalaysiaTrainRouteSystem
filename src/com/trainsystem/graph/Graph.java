@@ -38,6 +38,9 @@ public interface Graph<V, E extends Edge<V>> {
     // return an edge, based on source and destination
     E getEdge(V source, V destination);
 
+    // get all edges from the source
+    List<E> getEdges(V source);
+
     /*
         Neighbors Operation Methods
      */

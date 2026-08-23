@@ -5,6 +5,7 @@ import com.trainsystem.graph.TrainGraph;
 import com.trainsystem.model.Station;
 import com.trainsystem.ui.UIHelper;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class RouteMenu {
@@ -54,7 +55,7 @@ public class RouteMenu {
                     break;
                 case 4:
                     // display all trian routes
-
+                    displayAllTrainRoutesScreen();
                     break;
                 default:
                     // choice = 0, exit
@@ -204,6 +205,47 @@ public class RouteMenu {
         System.out.println("Duration: " + route.getDuration() + " minutes");
         System.out.printf("Ticket Fare: RM %.2f%n", route.getPrice());
 
+        UIHelper.pause(scanner);
+    }
+
+    private void displayAllTrainRoutesScreen() {
+        // title
+        UIHelper.printTitle("Display All Train Routes");
+
+        int number = 1;
+        // print table header
+        System.out.printf(
+                "%-5s %-8s %-8s %-12s %-13s%n",
+                "No.",
+                "From",
+                "To",
+                "Duration",
+                "Ticket Fare"
+        );
+
+        // divider
+        UIHelper.printLine();
+
+        for (Station source : graph.getVertices()) {
+            // get all edges from the source station
+            List<TrainEdge<Station>> routes = graph.getEdges(source);
+
+            for (TrainEdge<Station> route : routes) {
+                // display route information
+                System.out.printf(
+                        "%-5d %-8s %-8s %3d min      RM %7.2f%n",
+                        number++,
+                        source.getStationCode(),
+                        route.getDestination().getStationCode(),
+                        route.getDuration(),
+                        route.getPrice()
+                );
+                number++;
+            }
+        }
+        // divider
+        UIHelper.printLine();
+        System.out.println("Total Routes: " + (number - 1));
         UIHelper.pause(scanner);
     }
 }

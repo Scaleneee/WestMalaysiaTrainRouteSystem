@@ -129,6 +129,15 @@ public class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
         return null;
     }
 
+    @Override
+    public List<E> getEdges(V source) {
+        if (!containsVertex(source)) {
+            // vertex not found, return a empty list
+            return new ArrayList<>();
+        }
+        return adjacencyList.get(source);
+    }
+
     /*
         Neighbors Operation Methods
      */

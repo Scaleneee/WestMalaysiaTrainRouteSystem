@@ -18,6 +18,9 @@ public class Main {
     // declare a scanner obj used to get user input
     private static final Scanner SCANNER = new Scanner(System.in);
 
+    /*
+     * initialize the dummy data when the class loaded
+     */
     static {
         // declare all vertices (Station)
         Station kkb = new Station("KKB", "Kuala Kubu Bharu");
