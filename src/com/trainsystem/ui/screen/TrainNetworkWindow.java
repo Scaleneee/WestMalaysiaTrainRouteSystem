@@ -12,6 +12,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,25 +22,30 @@ public class TrainNetworkWindow extends JFrame {
     private final TrainGraph graph;
 
     public TrainNetworkWindow(TrainGraph graph) {
+
         this.graph = graph;
 
-        setTitle("Train Network");
-        setSize(1250, 800);
+        setTitle("West Malaysia Train Network");
+        setSize(1450, 900);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JLabel titleLabel =
-                new JLabel("WEST MALAYSIA TRAIN NETWORK",
-                        SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel(
+                "West Malaysia Train Network",
+                SwingConstants.CENTER
+        );
 
         titleLabel.setFont(
-                new Font("SansSerif", Font.BOLD, 24)
+                new Font("Arial", Font.BOLD, 28)
         );
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        15, 10, 10, 10
+                        15,
+                        10,
+                        10,
+                        10
                 )
         );
 
@@ -48,21 +54,38 @@ public class TrainNetworkWindow extends JFrame {
         NetworkPanel networkPanel =
                 new NetworkPanel(graph);
 
-        add(networkPanel, BorderLayout.CENTER);
+        JScrollPane scrollPane =
+                new JScrollPane(networkPanel);
 
-        JLabel legend = new JLabel(
-                "Station = Vertex     |     Line = Direct Route     |     Click a station to view its routes",
+        scrollPane.getVerticalScrollBar()
+                .setUnitIncrement(16);
+
+        scrollPane.getHorizontalScrollBar()
+                .setUnitIncrement(16);
+
+        add(scrollPane, BorderLayout.CENTER);
+
+        JLabel instructionLabel = new JLabel(
+                "Click a station to show its routes, duration and price",
                 SwingConstants.CENTER
         );
 
-        legend.setBorder(
+        instructionLabel.setFont(
+                new Font("Arial", Font.PLAIN, 13)
+        );
+
+        instructionLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        8, 10, 12, 10
+                        5,
+                        10,
+                        10,
+                        10
                 )
         );
 
-        add(legend, BorderLayout.SOUTH);
+        add(instructionLabel, BorderLayout.SOUTH);
     }
+
 
     public static void showNetwork(TrainGraph graph) {
 
@@ -75,16 +98,30 @@ public class TrainNetworkWindow extends JFrame {
         });
     }
 
+
     private static class NetworkPanel extends JPanel {
 
-        private static final int NODE_RADIUS = 24;
+        private static final int NODE_RADIUS = 28;
+
+        private static final int ARROW_SIZE = 12;
 
         private final TrainGraph graph;
 
         private final Map<String, Point2D.Double>
                 stationPositions = new HashMap<>();
 
+        private final Map<String, Integer>
+                displayOrder = new LinkedHashMap<>();
+
         private Station selectedStation;
+
+        /*
+         * Used to prevent price/duration labels
+         * from overlapping each other.
+         */
+        private final List<Rectangle>
+                usedLabelAreas = new ArrayList<>();
+
 
         public NetworkPanel(TrainGraph graph) {
 
@@ -92,111 +129,234 @@ public class TrainNetworkWindow extends JFrame {
 
             setBackground(Color.WHITE);
 
-            setToolTipText("");
+            setPreferredSize(
+                    new Dimension(
+                            1450,
+                            1250
+                    )
+            );
 
             createStationPositions();
 
-            addMouseListener(new MouseAdapter() {
+            createDisplayOrder();
 
-                @Override
-                public void mouseClicked(MouseEvent e) {
 
-                    selectedStation =
-                            findStationAt(e.getPoint());
+            addMouseListener(
+                    new MouseAdapter() {
 
-                    repaint();
-                }
-            });
+                        @Override
+                        public void mouseClicked(
+                                MouseEvent e
+                        ) {
+
+                            Station clickedStation =
+                                    findStationAt(
+                                            e.getPoint()
+                                    );
+
+                            if (clickedStation != null) {
+
+                                selectedStation =
+                                        clickedStation;
+
+                            } else {
+
+                                /*
+                                 * Click empty space
+                                 * to remove selection.
+                                 */
+                                selectedStation = null;
+                            }
+
+                            repaint();
+                        }
+                    }
+            );
         }
 
+        // station position
         private void createStationPositions() {
 
             stationPositions.put(
                     "PAD",
-                    new Point2D.Double(0.08, 0.10)
+                    new Point2D.Double(
+                            100,
+                            100
+                    )
             );
 
             stationPositions.put(
                     "ARA",
-                    new Point2D.Double(0.22, 0.10)
+                    new Point2D.Double(
+                            350,
+                            100
+                    )
             );
 
             stationPositions.put(
                     "ALS",
-                    new Point2D.Double(0.36, 0.10)
+                    new Point2D.Double(
+                            600,
+                            100
+                    )
             );
 
             stationPositions.put(
                     "SPG",
-                    new Point2D.Double(0.50, 0.10)
+                    new Point2D.Double(
+                            850,
+                            100
+                    )
             );
 
             stationPositions.put(
                     "TGS",
-                    new Point2D.Double(0.64, 0.10)
+                    new Point2D.Double(
+                            1100,
+                            100
+                    )
             );
+
 
             stationPositions.put(
                     "BUT",
-                    new Point2D.Double(0.22, 0.27)
+                    new Point2D.Double(
+                            320,
+                            310
+                    )
             );
 
             stationPositions.put(
                     "BM",
-                    new Point2D.Double(0.42, 0.27)
+                    new Point2D.Double(
+                            650,
+                            310
+                    )
             );
 
             stationPositions.put(
                     "TAS",
-                    new Point2D.Double(0.62, 0.27)
+                    new Point2D.Double(
+                            950,
+                            310
+                    )
             );
 
             stationPositions.put(
                     "IPH",
-                    new Point2D.Double(0.80, 0.31)
+                    new Point2D.Double(
+                            1280,
+                            390
+                    )
             );
+
 
             stationPositions.put(
                     "BDR",
-                    new Point2D.Double(0.47, 0.45)
+                    new Point2D.Double(
+                            650,
+                            570
+                    )
             );
 
             stationPositions.put(
                     "KKB",
-                    new Point2D.Double(0.70, 0.47)
+                    new Point2D.Double(
+                            1030,
+                            570
+                    )
             );
+
 
             stationPositions.put(
                     "KLS",
-                    new Point2D.Double(0.58, 0.60)
+                    new Point2D.Double(
+                            830,
+                            760
+                    )
             );
+
 
             stationPositions.put(
                     "SRM",
-                    new Point2D.Double(0.58, 0.72)
+                    new Point2D.Double(
+                            830,
+                            900
+                    )
             );
+
 
             stationPositions.put(
                     "GMS",
-                    new Point2D.Double(0.50, 0.86)
+                    new Point2D.Double(
+                            600,
+                            1080
+                    )
             );
 
             stationPositions.put(
                     "SEG",
-                    new Point2D.Double(0.66, 0.86)
+                    new Point2D.Double(
+                            800,
+                            1080
+                    )
             );
 
             stationPositions.put(
                     "KLV",
-                    new Point2D.Double(0.80, 0.86)
+                    new Point2D.Double(
+                            1030,
+                            1080
+                    )
             );
 
             stationPositions.put(
                     "JHB",
-                    new Point2D.Double(0.93, 0.86)
+                    new Point2D.Double(
+                            1280,
+                            1080
+                    )
             );
         }
 
+        // display order
+        private void createDisplayOrder() {
+
+            String[] order = {
+
+                    "PAD",
+                    "ARA",
+                    "ALS",
+                    "SPG",
+                    "TGS",
+
+                    "BUT",
+                    "BM",
+                    "BDR",
+                    "TAS",
+                    "IPH",
+
+                    "KKB",
+                    "KLS",
+                    "SRM",
+
+                    "GMS",
+                    "SEG",
+                    "KLV",
+                    "JHB"
+            };
+
+
+            for (int i = 0; i < order.length; i++) {
+
+                displayOrder.put(
+                        order[i],
+                        i
+                );
+            }
+        }
+
+        // paint
         @Override
         protected void paintComponent(Graphics g) {
 
@@ -210,290 +370,1033 @@ public class TrainNetworkWindow extends JFrame {
                     RenderingHints.VALUE_ANTIALIAS_ON
             );
 
-            drawRoutes(g2);
+
+            /*
+             * Clear old label positions
+             * every time graph is repainted.
+             */
+            usedLabelAreas.clear();
+
+
+            drawNetwork(g2);
 
             drawStations(g2);
 
             g2.dispose();
         }
 
-        private void drawRoutes(Graphics2D g2) {
+        // draw network
+         private void drawNetwork(Graphics2D g2) {
+
+            Set<String> highlightedPairs =
+                    getHighlightedPairs();
 
             Set<String> drawnPairs =
                     new HashSet<>();
 
-            List<Station> stations =
-                    new ArrayList<>(
-                            graph.getVertices()
-                    );
+            // draw normal routes
+            for (Station source :
+                    graph.getVertices()) {
 
-            for (Station source : stations) {
-
-                List<TrainEdge<Station>> routes =
-                        new ArrayList<>(
-                                graph.getEdges(source)
-                        );
-
-                for (TrainEdge<Station> route : routes) {
+                for (TrainEdge<Station> edge :
+                        graph.getEdges(source)) {
 
                     Station destination =
-                            route.getDestination();
+                            edge.getDestination();
 
-                    String sourceCode =
-                            source.getStationCode();
 
-                    String destinationCode =
-                            destination.getStationCode();
+                    String pairKey =
+                            createPairKey(
+                                    source,
+                                    destination
+                            );
 
-                    String pairKey;
 
-                    if (sourceCode.compareTo(
-                            destinationCode) < 0) {
-
-                        pairKey =
-                                sourceCode
-                                        + "-"
-                                        + destinationCode;
-
-                    } else {
-
-                        pairKey =
-                                destinationCode
-                                        + "-"
-                                        + sourceCode;
-                    }
-
+                    /*
+                     * Avoid duplicate line.
+                     *
+                     * Example:
+                     *
+                     * PAD -> ARA
+                     * ARA -> PAD
+                     *
+                     * only one line is drawn.
+                     */
                     if (drawnPairs.contains(pairKey)) {
+
                         continue;
                     }
 
+
                     drawnPairs.add(pairKey);
 
-                    Point sourcePoint =
-                            getStationPoint(source);
 
-                    Point destinationPoint =
-                            getStationPoint(destination);
+                    /*
+                     * If this route belongs to
+                     * selected station, skip
+                     * grey version.
+                     *
+                     * It will be drawn blue later.
+                     */
+                    if (highlightedPairs.contains(pairKey)) {
 
-                    boolean highlighted =
-                            selectedStation != null
-                                    &&
-                                    (
-                                            selectedStation.equals(source)
-                                                    ||
-                                                    selectedStation.equals(destination)
-                                    );
-
-                    if (highlighted) {
-
-                        g2.setColor(
-                                new Color(
-                                        25,
-                                        118,
-                                        210
-                                )
-                        );
-
-                        g2.setStroke(
-                                new BasicStroke(3f)
-                        );
-
-                    } else {
-
-                        g2.setColor(
-                                new Color(
-                                        185,
-                                        185,
-                                        185
-                                )
-                        );
-
-                        g2.setStroke(
-                                new BasicStroke(1.4f)
-                        );
+                        continue;
                     }
 
-                    g2.drawLine(
-                            sourcePoint.x,
-                            sourcePoint.y,
-                            destinationPoint.x,
-                            destinationPoint.y
-                    );
+
+                    Station displaySource =
+                            source;
+
+                    Station displayDestination =
+                            destination;
+
 
                     boolean reverseExists =
-                            graph.containsEdge(
+                            graph.getEdge(
                                     destination,
                                     source
-                            );
+                            ) != null;
 
-                    drawArrowHead(
-                            g2,
-                            sourcePoint,
-                            destinationPoint
-                    );
 
+                    /*
+                     * If both directions exist,
+                     * choose only ONE arrow direction
+                     * for the normal graph.
+                     */
                     if (reverseExists) {
 
-                        drawArrowHead(
-                                g2,
-                                destinationPoint,
-                                sourcePoint
-                        );
+                        if (compareDisplayOrder(
+                                source,
+                                destination
+                        ) > 0) {
+
+                            displaySource =
+                                    destination;
+
+                            displayDestination =
+                                    source;
+                        }
                     }
+
+
+                    drawRoute(
+                            g2,
+
+                            displaySource,
+
+                            displayDestination,
+
+                            null,
+
+                            new Color(
+                                    185,
+                                    185,
+                                    185
+                            ),
+
+                            1.5f,
+
+                            false,
+
+                            0
+                    );
+                }
+            }
+
+            // draw selected routes
+             if (selectedStation != null) {
+
+                int routeIndex = 0;
+
+
+                for (TrainEdge<Station> edge :
+                        graph.getEdges(
+                                selectedStation
+                        )) {
+
+                    Station destination =
+                            edge.getDestination();
+
+
+                    /*
+                     * Selected station becomes
+                     * the source.
+                     *
+                     * Arrow:
+                     *
+                     * selected station
+                     *       ↓
+                     * destination
+                     */
+                    drawRoute(
+                            g2,
+
+                            selectedStation,
+
+                            destination,
+
+                            edge,
+
+                            new Color(
+                                    37,
+                                    91,
+                                    168
+                            ),
+
+                            3.5f,
+
+                            true,
+
+                            routeIndex
+                    );
+
+
+                    routeIndex++;
                 }
             }
         }
 
-        private void drawArrowHead(
+        // get highlighted route
+        private Set<String> getHighlightedPairs() {
+
+            Set<String> highlightedPairs =
+                    new HashSet<>();
+
+
+            if (selectedStation == null) {
+
+                return highlightedPairs;
+            }
+
+
+            for (TrainEdge<Station> edge :
+                    graph.getEdges(
+                            selectedStation
+                    )) {
+
+                highlightedPairs.add(
+
+                        createPairKey(
+                                selectedStation,
+                                edge.getDestination()
+                        )
+                );
+            }
+
+
+            return highlightedPairs;
+        }
+
+        // create unique pair key
+        private String createPairKey(
+                Station first,
+                Station second
+        ) {
+
+            String firstCode =
+                    first.getStationCode();
+
+            String secondCode =
+                    second.getStationCode();
+
+
+            if (firstCode.compareTo(
+                    secondCode
+            ) < 0) {
+
+                return firstCode
+                        + "-"
+                        + secondCode;
+            }
+
+
+            return secondCode
+                    + "-"
+                    + firstCode;
+        }
+
+        // compare station display order
+         private int compareDisplayOrder(
+                Station first,
+                Station second
+        ) {
+
+            int firstOrder =
+                    displayOrder.getOrDefault(
+                            first.getStationCode(),
+                            Integer.MAX_VALUE
+                    );
+
+
+            int secondOrder =
+                    displayOrder.getOrDefault(
+                            second.getStationCode(),
+                            Integer.MAX_VALUE
+                    );
+
+
+            return Integer.compare(
+                    firstOrder,
+                    secondOrder
+            );
+        }
+
+        // draw one route
+        private void drawRoute(
                 Graphics2D g2,
-                Point from,
-                Point to) {
+                Station source,
+                Station destination,
+                TrainEdge<Station> edge,
+                Color color,
+                float strokeWidth,
+                boolean showWeight,
+                int routeIndex
+        ) {
 
-            double angle =
-                    Math.atan2(
-                            to.y - from.y,
-                            to.x - from.x
+            Point sourcePoint =
+                    getStationPoint(source);
+
+            Point destinationPoint =
+                    getStationPoint(destination);
+
+
+            double dx =
+                    destinationPoint.x
+                            -
+                            sourcePoint.x;
+
+
+            double dy =
+                    destinationPoint.y
+                            -
+                            sourcePoint.y;
+
+
+            double length =
+                    Math.sqrt(
+                            dx * dx
+                                    +
+                                    dy * dy
                     );
 
-            int endX =
+
+            if (length == 0) {
+
+                return;
+            }
+
+
+            double unitX =
+                    dx / length;
+
+            double unitY =
+                    dy / length;
+
+            // start outside source circle
+            int startX =
                     (int) (
-                            to.x
-                                    -
-                                    NODE_RADIUS
-                                            *
-                                            Math.cos(angle)
+                            sourcePoint.x
+                                    +
+                                    unitX * NODE_RADIUS
                     );
+
+
+            int startY =
+                    (int) (
+                            sourcePoint.y
+                                    +
+                                    unitY * NODE_RADIUS
+                    );
+
+            // stop before destination circle
+             int endX =
+                    (int) (
+                            destinationPoint.x
+                                    -
+                                    unitX * NODE_RADIUS
+                    );
+
 
             int endY =
                     (int) (
-                            to.y
+                            destinationPoint.y
                                     -
-                                    NODE_RADIUS
-                                            *
-                                            Math.sin(angle)
+                                    unitY * NODE_RADIUS
                     );
 
-            int arrowSize = 9;
+            // draw line
+             g2.setColor(color);
 
-            double leftAngle =
-                    angle - Math.PI / 7;
 
-            double rightAngle =
-                    angle + Math.PI / 7;
+               g2.setStroke(
+                    new BasicStroke(
+                            strokeWidth,
+                            BasicStroke.CAP_ROUND,
+                            BasicStroke.JOIN_ROUND
+                    )
+            );
 
-            int x1 =
-                    (int) (
-                            endX
-                                    -
-                                    arrowSize
-                                            *
-                                            Math.cos(leftAngle)
-                    );
 
-            int y1 =
-                    (int) (
-                            endY
-                                    -
-                                    arrowSize
-                                            *
-                                            Math.sin(leftAngle)
-                    );
+            g2.drawLine(
+                    startX,
+                    startY,
+                    endX,
+                    endY
+            );
 
-            int x2 =
-                    (int) (
-                            endX
-                                    -
-                                    arrowSize
-                                            *
-                                            Math.cos(rightAngle)
-                    );
+            // one arrow
+           drawArrow(
+                    g2,
 
-            int y2 =
-                    (int) (
-                            endY
-                                    -
-                                    arrowSize
-                                            *
-                                            Math.sin(rightAngle)
-                    );
+                    startX,
+                    startY,
 
-            Polygon arrow = new Polygon();
+                    endX,
+                    endY,
 
-            arrow.addPoint(endX, endY);
+                    color
+            );
 
-            arrow.addPoint(x1, y1);
+            // show price and duration for selected route
+            if (showWeight && edge != null) {
 
-            arrow.addPoint(x2, y2);
+                drawWeightLabel(
+                        g2,
 
-            g2.fillPolygon(arrow);
+                        edge,
+
+                        startX,
+                        startY,
+
+                        endX,
+                        endY,
+
+                        routeIndex
+                );
+            }
         }
 
-        private void drawStations(Graphics2D g2) {
+        // Draw arrow
+       private void drawArrow(
+                Graphics2D g2,
+                int startX,
+                int startY,
+                int endX,
+                int endY,
+                Color color
+        ) {
 
-            List<Station> stations =
-                    new ArrayList<>(
-                            graph.getVertices()
+            double dx =
+                    endX - startX;
+
+            double dy =
+                    endY - startY;
+
+
+            double angle =
+                    Math.atan2(
+                            dy,
+                            dx
                     );
 
-            for (Station station : stations) {
 
-                Point point =
-                        getStationPoint(station);
+            /*
+             * Arrow slightly closer
+             * to destination.
+             */
+            double arrowPosition =
+                    0.68;
 
-                boolean selected =
-                        station.equals(
-                                selectedStation
+
+            double arrowX =
+                    startX
+                            +
+                            dx * arrowPosition;
+
+
+            double arrowY =
+                    startY
+                            +
+                            dy * arrowPosition;
+
+
+            int tipX =
+                    (int) arrowX;
+
+            int tipY =
+                    (int) arrowY;
+
+
+            int leftX =
+                    (int) (
+                            arrowX
+                                    -
+                                    ARROW_SIZE
+                                            *
+                                            Math.cos(
+                                                    angle
+                                                            -
+                                                            Math.PI / 6
+                                            )
+                    );
+
+
+            int leftY =
+                    (int) (
+                            arrowY
+                                    -
+                                    ARROW_SIZE
+                                            *
+                                            Math.sin(
+                                                    angle
+                                                            -
+                                                            Math.PI / 6
+                                            )
+                    );
+
+
+            int rightX =
+                    (int) (
+                            arrowX
+                                    -
+                                    ARROW_SIZE
+                                            *
+                                            Math.cos(
+                                                    angle
+                                                            +
+                                                            Math.PI / 6
+                                            )
+                    );
+
+
+            int rightY =
+                    (int) (
+                            arrowY
+                                    -
+                                    ARROW_SIZE
+                                            *
+                                            Math.sin(
+                                                    angle
+                                                            +
+                                                            Math.PI / 6
+                                            )
+                    );
+
+
+            Polygon arrowHead =
+                    new Polygon();
+
+
+            arrowHead.addPoint(
+                    tipX,
+                    tipY
+            );
+
+            arrowHead.addPoint(
+                    leftX,
+                    leftY
+            );
+
+            arrowHead.addPoint(
+                    rightX,
+                    rightY
+            );
+
+
+            g2.setColor(color);
+
+            g2.fillPolygon(
+                    arrowHead
+            );
+        }
+
+        // Draw price and duration
+       private void drawWeightLabel(
+                Graphics2D g2,
+                TrainEdge<Station> edge,
+                int startX,
+                int startY,
+                int endX,
+                int endY,
+                int routeIndex
+        ) {
+
+            /*
+             * Weightage from dummy data.
+             *
+             * Example:
+             *
+             * 38 min | RM8.00
+             */
+            String weightText =
+                    edge.getDuration()
+                            +
+                            " min | RM"
+                            +
+                            String.format(
+                                    "%.2f",
+                                    edge.getPrice()
+                            );
+
+
+            double dx =
+                    endX - startX;
+
+            double dy =
+                    endY - startY;
+
+
+            double length =
+                    Math.sqrt(
+                            dx * dx
+                                    +
+                                    dy * dy
+                    );
+
+
+            if (length == 0) {
+
+                return;
+            }
+
+
+            /*
+             * Perpendicular direction.
+             *
+             * This allows the label to move
+             * away from the actual line.
+             */
+            double perpendicularX =
+                    -dy / length;
+
+            double perpendicularY =
+                    dx / length;
+
+
+            /*
+             * Different routes use slightly
+             * different positions.
+             *
+             * This helps reduce label overlap.
+             */
+            double[] positions = {
+                    0.35,
+                    0.45,
+                    0.55,
+                    0.40,
+                    0.60,
+                    0.50
+            };
+
+
+            double position =
+                    positions[
+                            routeIndex
+                                    %
+                                    positions.length
+                            ];
+
+
+            double baseX =
+                    startX
+                            +
+                            dx * position;
+
+
+            double baseY =
+                    startY
+                            +
+                            dy * position;
+
+
+            /*
+             * Alternate label side:
+             *
+             * first  = one side
+             * second = other side
+             */
+            int side;
+
+
+            if (routeIndex % 2 == 0) {
+
+                side = 1;
+
+            } else {
+
+                side = -1;
+            }
+
+
+            int offset =
+                    22;
+
+
+            g2.setFont(
+                    new Font(
+                            "Arial",
+                            Font.BOLD,
+                            12
+                    )
+            );
+
+
+            FontMetrics fm =
+                    g2.getFontMetrics();
+
+
+            int textWidth =
+                    fm.stringWidth(
+                            weightText
+                    );
+
+
+            int textHeight =
+                    fm.getHeight();
+
+
+            Rectangle labelArea = null;
+
+            int labelCenterX = 0;
+            int labelCenterY = 0;
+
+
+            /*
+             * Try several positions until
+             * the label doesn't overlap
+             * another price/duration label.
+             */
+            for (
+                    int attempt = 0;
+                    attempt < 8;
+                    attempt++
+            ) {
+
+                int currentOffset =
+                        offset
+                                +
+                                attempt * 18;
+
+
+                labelCenterX =
+                        (int) (
+                                baseX
+                                        +
+                                        perpendicularX
+                                                *
+                                                currentOffset
+                                                *
+                                                side
                         );
 
-                if (selected) {
+
+                labelCenterY =
+                        (int) (
+                                baseY
+                                        +
+                                        perpendicularY
+                                                *
+                                                currentOffset
+                                                *
+                                                side
+                        );
+
+
+                int boxX =
+                        labelCenterX
+                                -
+                                textWidth / 2
+                                -
+                                7;
+
+
+                int boxY =
+                        labelCenterY
+                                -
+                                textHeight / 2
+                                -
+                                4;
+
+
+                int boxWidth =
+                        textWidth + 14;
+
+
+                int boxHeight =
+                        textHeight + 8;
+
+
+                Rectangle testArea =
+                        new Rectangle(
+                                boxX,
+                                boxY,
+                                boxWidth,
+                                boxHeight
+                        );
+
+
+                if (!isLabelOverlapping(testArea)) {
+
+                    labelArea =
+                            testArea;
+
+                    break;
+                }
+            }
+
+
+            /*
+             * Fallback position.
+             */
+            if (labelArea == null) {
+
+                labelArea =
+                        new Rectangle(
+
+                                labelCenterX
+                                        -
+                                        textWidth / 2
+                                        -
+                                        7,
+
+                                labelCenterY
+                                        -
+                                        textHeight / 2
+                                        -
+                                        4,
+
+                                textWidth + 14,
+
+                                textHeight + 8
+                        );
+            }
+
+
+            usedLabelAreas.add(
+                    labelArea
+            );
+
+            // background = white
+            g2.setColor(
+                    new Color(
+                            255,
+                            255,
+                            255,
+                            245
+                    )
+            );
+
+
+            g2.fillRoundRect(
+
+                    labelArea.x,
+
+                    labelArea.y,
+
+                    labelArea.width,
+
+                    labelArea.height,
+
+                    10,
+
+                    10
+            );
+
+            // Border
+             g2.setColor(
+                    new Color(
+                            37,
+                            91,
+                            168
+                    )
+            );
+
+
+            g2.setStroke(
+                    new BasicStroke(
+                            1.2f
+                    )
+            );
+
+
+            g2.drawRoundRect(
+
+                    labelArea.x,
+
+                    labelArea.y,
+
+                    labelArea.width,
+
+                    labelArea.height,
+
+                    10,
+
+                    10
+            );
+
+            // Label text
+             g2.setColor(
+                    new Color(
+                            30,
+                            30,
+                            30
+                    )
+            );
+
+
+            int textX =
+                    labelArea.x
+                            +
+                            7;
+
+
+            int textY =
+                    labelArea.y
+                            +
+                            (
+                                    labelArea.height
+                                            -
+                                            fm.getHeight()
+                            ) / 2
+                            +
+                            fm.getAscent();
+
+
+            g2.drawString(
+                    weightText,
+                    textX,
+                    textY
+            );
+        }
+
+        // Check label overlap
+         private boolean isLabelOverlapping(
+                Rectangle newArea
+        ) {
+
+            /*
+             * Add some extra space between
+             * labels.
+             */
+            Rectangle expandedArea =
+                    new Rectangle(
+
+                            newArea.x - 5,
+
+                            newArea.y - 5,
+
+                            newArea.width + 10,
+
+                            newArea.height + 10
+                    );
+
+
+            for (Rectangle existingArea :
+                    usedLabelAreas) {
+
+                if (expandedArea.intersects(
+                        existingArea
+                )) {
+
+                    return true;
+                }
+            }
+
+
+            return false;
+        }
+
+        // Draw stations
+        private void drawStations(
+                Graphics2D g2
+        ) {
+
+            for (Station station :
+                    graph.getVertices()) {
+
+                Point point =
+                        getStationPoint(
+                                station
+                        );
+
+
+                /*
+                 * Selected station = orange
+                 */
+                if (station.equals(
+                        selectedStation
+                )) {
 
                     g2.setColor(
                             new Color(
-                                    25,
-                                    118,
-                                    210
+                                    235,
+                                    120,
+                                    20
                             )
                     );
 
                 } else {
 
+                    /*
+                     * Normal station = blue
+                     */
                     g2.setColor(
                             new Color(
-                                    33,
-                                    33,
-                                    33
+                                    37,
+                                    91,
+                                    168
                             )
                     );
                 }
 
+
+
+                // Station circle
                 g2.fillOval(
-                        point.x - NODE_RADIUS,
-                        point.y - NODE_RADIUS,
+
+                        point.x
+                                -
+                                NODE_RADIUS,
+
+                        point.y
+                                -
+                                NODE_RADIUS,
+
                         NODE_RADIUS * 2,
+
                         NODE_RADIUS * 2
                 );
 
-                g2.setColor(Color.WHITE);
+                // Station code
+               g2.setColor(
+                        Color.WHITE
+                );
+
 
                 g2.setFont(
                         new Font(
-                                "SansSerif",
+                                "Arial",
                                 Font.BOLD,
                                 12
                         )
                 );
 
-                String code =
+
+                String stationCode =
                         station.getStationCode();
+
 
                 FontMetrics codeMetrics =
                         g2.getFontMetrics();
 
+
                 int codeX =
                         point.x
                                 -
-                                codeMetrics.stringWidth(code)
-                                        / 2;
+                                codeMetrics.stringWidth(
+                                        stationCode
+                                ) / 2;
+
 
                 int codeY =
                         point.y
@@ -503,133 +1406,104 @@ public class TrainNetworkWindow extends JFrame {
                                 -
                                 2;
 
+
                 g2.drawString(
-                        code,
+                        stationCode,
                         codeX,
                         codeY
                 );
 
-                g2.setColor(Color.BLACK);
+                // Station name
+                g2.setColor(
+                        Color.BLACK
+                );
+
 
                 g2.setFont(
                         new Font(
-                                "SansSerif",
+                                "Arial",
                                 Font.PLAIN,
-                                11
+                                12
                         )
                 );
 
-                String name =
+
+                String stationName =
                         station.getStationName();
+
 
                 FontMetrics nameMetrics =
                         g2.getFontMetrics();
 
+
                 int nameX =
                         point.x
                                 -
-                                nameMetrics.stringWidth(name)
-                                        / 2;
+                                nameMetrics.stringWidth(
+                                        stationName
+                                ) / 2;
+
 
                 int nameY =
                         point.y
                                 +
                                 NODE_RADIUS
                                 +
-                                16;
+                                20;
+
 
                 g2.drawString(
-                        name,
+                        stationName,
                         nameX,
                         nameY
                 );
             }
         }
-
+        // Get station position
         private Point getStationPoint(
-                Station station) {
+                Station station
+        ) {
 
-            Point2D.Double normalized =
+            Point2D.Double position =
                     stationPositions.get(
                             station.getStationCode()
                     );
 
-            if (normalized != null) {
 
-                int x =
-                        60
-                                +
-                                (int) (
-                                        normalized.x
-                                                *
-                                                Math.max(
-                                                        100,
-                                                        getWidth() - 120
-                                                )
-                                );
+            if (position != null) {
 
-                int y =
-                        40
-                                +
-                                (int) (
-                                        normalized.y
-                                                *
-                                                Math.max(
-                                                        100,
-                                                        getHeight() - 90
-                                                )
-                                );
-
-                return new Point(x, y);
+                return new Point(
+                        (int) position.x,
+                        (int) position.y
+                );
             }
 
-            int hash =
-                    Math.abs(
-                            station
-                                    .getStationCode()
-                                    .hashCode()
-                    );
 
-            int x =
-                    70
-                            +
-                            (
-                                    hash
-                                            %
-                                            Math.max(
-                                                    1,
-                                                    getWidth() - 140
-                                            )
-                            );
-
-            int y =
-                    70
-                            +
-                            (
-                                    (hash / 100)
-                                            %
-                                            Math.max(
-                                                    1,
-                                                    getHeight() - 140
-                                            )
-                            );
-
-            return new Point(x, y);
+            return new Point(
+                    100,
+                    100
+            );
         }
 
-        private Station findStationAt(
-                Point mousePoint) {
+        // find clicked station
+         private Station findStationAt(
+                Point mousePoint
+        ) {
 
             for (Station station :
                     graph.getVertices()) {
 
                 Point stationPoint =
-                        getStationPoint(station);
+                        getStationPoint(
+                                station
+                        );
+
 
                 double distance =
                         mousePoint.distance(
                                 stationPoint
                         );
+
 
                 if (distance
                         <= NODE_RADIUS + 5) {
@@ -638,30 +1512,8 @@ public class TrainNetworkWindow extends JFrame {
                 }
             }
 
+
             return null;
-        }
-
-        @Override
-        public String getToolTipText(
-                MouseEvent event) {
-
-            Station station =
-                    findStationAt(
-                            event.getPoint()
-                    );
-
-            if (station == null) {
-                return null;
-            }
-
-            int routeCount =
-                    graph.getDegree(station);
-
-            return station.getStationCode()
-                    + " - "
-                    + station.getStationName()
-                    + " | Outgoing routes: "
-                    + routeCount;
         }
     }
 }
