@@ -11,10 +11,33 @@ import com.trainsystem.ui.UIHelper;
 public class Main {
 
     // declare a private TrainGraph use to store the stations and routes
-    private static TrainGraph graph = new TrainGraph();
+    private static final TrainGraph GRAPH = new TrainGraph();
 
     // declare a scanner obj used to get user input
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
+
+    static {
+        // declare all vertices (Station)
+        Station kkb = new Station("KKB", "");
+        Station kls = new Station("KLS", "KL Sentral");
+        Station bpr = new Station("BPR", "");
+        Station pad = new Station("PAD", "");
+        Station ara = new Station("ARA", "");
+        Station srm = new Station("SRM", "");
+        Station als = new Station("ALS", "Alor Setar");
+        Station gms = new Station("GMS", "Gemas");
+        Station seg = new Station("SEG", "Segamat");
+        Station klv = new Station("KLV", "Kluang");
+        Station jhb = new Station("JHB", "Johor Bahru");
+        Station spg = new Station("SPG", "");
+        Station but = new Station("BUT", "Butterworth");
+        Station tas = new Station("TAS", "Taiping");
+        Station bm  = new Station("BM", "Bukit Mertajam");
+        Station iph = new Station("IPH", "Ipoh");
+        Station tgs = new Station("TGS", "");
+
+
+    }
 
     public static void main(String[] args) {
         // start the application
@@ -37,7 +60,7 @@ public class Main {
             System.out.println("0. Exit\n");
 
             // get user choice
-            choice = UIHelper.getMenuChoice(scanner, 4);
+            choice = UIHelper.getMenuChoice(SCANNER, 4);
 
             switch (choice) {
                 case 1:
@@ -76,7 +99,7 @@ public class Main {
             System.out.println("4. Display All Train Station");
             System.out.println("0. Back\n");
 
-            choice = UIHelper.getMenuChoice(scanner, 4);
+            choice = UIHelper.getMenuChoice(SCANNER, 4);
 
             switch (choice) {
                 case 1:
@@ -108,20 +131,20 @@ public class Main {
 
         // ask user input the station code
         System.out.print("Enter Station Code: ");
-        String stationCode = scanner.nextLine().trim().toUpperCase();
+        String stationCode = SCANNER.nextLine().trim().toUpperCase();
 
         // ask user input the station name
         System.out.print("Enter Station Name: ");
-        String stationName = scanner.nextLine().trim().toUpperCase();
+        String stationName = SCANNER.nextLine().trim().toUpperCase();
 
         // confirmation message
-        boolean confirmation = UIHelper.getConfirmation(scanner, "\nAdd this station?");
+        boolean confirmation = UIHelper.getConfirmation(SCANNER, "\nAdd this station?");
 
         // create station variable
         Station station = new Station(stationCode, stationName);
         if (confirmation) {
             // add station confirmed
-            if (graph.addVertex(station)) {
+            if (GRAPH.addVertex(station)) {
                 // add successfully
                 UIHelper.printSuccess("Station (" + station + ") added successfully.");
             } else {
@@ -130,7 +153,7 @@ public class Main {
         }
         // add station canceled
         // back to the previous screen
-        UIHelper.pause(scanner);
+        UIHelper.pause(SCANNER);
     }
 
     private static void removeTrainStationScreen() {
@@ -139,10 +162,10 @@ public class Main {
 
         // ask user input the station code
         System.out.print("Enter Station Code: ");
-        String stationCode = scanner.nextLine().trim().toUpperCase();
+        String stationCode = SCANNER.nextLine().trim().toUpperCase();
 
         // search station, to know whether exists or not
-        Station station = graph.searchStation(stationCode);
+        Station station = GRAPH.searchStation(stationCode);
 
         // display station message
         if (station != null) {
@@ -151,7 +174,7 @@ public class Main {
             System.out.println("Name: " + station.getStationName());
         } else {
             UIHelper.printError("Station not found.");
-            UIHelper.pause(scanner);
+            UIHelper.pause(SCANNER);
             return;
         }
 
@@ -159,13 +182,13 @@ public class Main {
         UIHelper.printWarning("Removing this station will also remove all routes connected to this station.\n");
 
         // confirmation
-        boolean confirmation = UIHelper.getConfirmation(scanner, "Remove this station?");
+        boolean confirmation = UIHelper.getConfirmation(SCANNER, "Remove this station?");
 
         if (confirmation) {
             // remove confirmed
-            if (graph.removeVertex(station)) {
+            if (GRAPH.removeVertex(station)) {
                 UIHelper.printSuccess("Station removed successfully.");
-                UIHelper.pause(scanner);
+                UIHelper.pause(SCANNER);
             }
         }
     }
@@ -176,20 +199,20 @@ public class Main {
 
         // ask user input the station code
         System.out.print("Enter Station Code: ");
-        String stationCode = scanner.nextLine().trim().toUpperCase();
+        String stationCode = SCANNER.nextLine().trim().toUpperCase();
 
         // search station, to know whether exists or not
-        Station station = graph.searchStation(stationCode);
+        Station station = GRAPH.searchStation(stationCode);
 
         // display station message
         if (station != null) {
             System.out.println("Station Found:");
             System.out.println("Code: " + station.getStationCode());
             System.out.println("Name: " + station.getStationName());
-            UIHelper.pause(scanner);
+            UIHelper.pause(SCANNER);
         } else {
             UIHelper.printError("Station not found.");
-            UIHelper.pause(scanner);
+            UIHelper.pause(SCANNER);
         }
     }
 
@@ -198,7 +221,7 @@ public class Main {
         UIHelper.printTitle("All Train Stations");
 
         // get all stations from the graph
-        Set<Station> stations = graph.getVertices();
+        Set<Station> stations = GRAPH.getVertices();
 
         // if no any station found in graph
         if (stations.isEmpty()) {
@@ -231,7 +254,7 @@ public class Main {
         UIHelper.printLine();
 
         // display total stations
-        System.out.println("Total stations: " + graph.getSize());
-        UIHelper.pause(scanner);
+        System.out.println("Total stations: " + GRAPH.getSize());
+        UIHelper.pause(SCANNER);
     }
 }
