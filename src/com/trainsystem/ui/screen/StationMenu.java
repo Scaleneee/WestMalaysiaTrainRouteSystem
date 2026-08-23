@@ -69,11 +69,11 @@ public class StationMenu {
 
         // ask user input the station code
         System.out.print("Enter Station Code: ");
-        String stationCode = scanner.nextLine().trim().toUpperCase();
+        String stationCode = scanner.nextLine();
 
         // ask user input the station name
         System.out.print("Enter Station Name: ");
-        String stationName = scanner.nextLine().trim().toUpperCase();
+        String stationName = scanner.nextLine();
 
         // confirmation message
         boolean confirmation = InputUtils.getConfirmation(scanner, "\nAdd this station?");

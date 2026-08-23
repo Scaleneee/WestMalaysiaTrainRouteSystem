@@ -52,4 +52,26 @@ public class ConsoleUtils {
         System.out.print("Press Enter to continue...");
         scanner.nextLine();
     }
+
+    /**
+     * convert minutes duration to hours and minutes form
+     * @param minutes duration in minutes
+     * @return duration in hours and minutes in String format
+     */
+    public static String formatDuration(int minutes) {
+
+        // calculate the hours and minutes
+        int hours = minutes / 60;
+        int remainingMinutes = minutes % 60;
+
+        if (hours == 0) {
+            return remainingMinutes + " min";
+        }
+
+        if (remainingMinutes == 0) {
+            return hours + "h";
+        }
+
+        return hours + "h " + remainingMinutes + "min";
+    }
 }

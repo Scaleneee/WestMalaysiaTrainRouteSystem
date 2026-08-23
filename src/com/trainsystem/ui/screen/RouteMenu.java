@@ -86,7 +86,7 @@ public class RouteMenu {
         // display route
         System.out.println("\nRoute:");
         System.out.println(sourceCode + " -> " + destinationCode);
-        System.out.println("Duration: " + duration + " minutes");
+        System.out.println("Duration: " + ConsoleUtils.formatDuration(duration));
         System.out.printf("Ticket Fare: RM %.2f%n", ticketFare);
 
         // get source station and destination station based on the station code
@@ -152,7 +152,7 @@ public class RouteMenu {
         // display route information
         System.out.println("\nRoute Found: ");
         System.out.println(sourceCode + " -> " + destinationCode);
-        System.out.println("Duration: " + route.getDuration() + " minutes");
+        System.out.println("Duration: " + ConsoleUtils.formatDuration(route.getDuration()));
         System.out.printf("Ticket Fare: RM %.2f%n", route.getPrice());
 
         // confirmation
@@ -203,7 +203,7 @@ public class RouteMenu {
         // display route information
         System.out.println("\nRoute Found: ");
         System.out.println(sourceCode + " -> " + destinationCode);
-        System.out.println("Duration: " + route.getDuration() + " minutes");
+        System.out.println("Duration: " + ConsoleUtils.formatDuration(route.getDuration()));
         System.out.printf("Ticket Fare: RM %.2f%n", route.getPrice());
 
         ConsoleUtils.pause(scanner);
@@ -234,11 +234,11 @@ public class RouteMenu {
             for (TrainEdge<Station> route : routes) {
                 // display route information
                 System.out.printf(
-                        "%-5d %-8s %-8s %3d min      RM %7.2f%n",
+                        "%-5d %-8s %-8s %8s     RM %7.2f%n",
                         number++,
                         source.getStationCode(),
                         route.getDestination().getStationCode(),
-                        route.getDuration(),
+                        ConsoleUtils.formatDuration(route.getDuration()),
                         route.getPrice()
                 );
             }
