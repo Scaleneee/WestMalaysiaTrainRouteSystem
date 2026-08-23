@@ -18,7 +18,8 @@ public class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
 
     @Override
     public Set<V> getVertices() {
-        return adjacencyList.keySet();
+        // don't allow others to modify the set
+        return Collections.unmodifiableSet(adjacencyList.keySet());
     }
 
     @Override
@@ -148,7 +149,8 @@ public class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
             // vertex not found, return a empty list
             return new ArrayList<>();
         }
-        return adjacencyList.get(source);
+        // don't allow others to modify the list
+        return Collections.unmodifiableList(adjacencyList.get(source));
     }
 
     /*

@@ -3,7 +3,8 @@ package com.trainsystem.ui.screen;
 import com.trainsystem.graph.TrainEdge;
 import com.trainsystem.graph.TrainGraph;
 import com.trainsystem.model.Station;
-import com.trainsystem.ui.UIHelper;
+import com.trainsystem.ui.utils.ConsoleUtils;
+import com.trainsystem.ui.utils.InputUtils;
 
 import java.util.List;
 import java.util.Scanner;
@@ -29,7 +30,7 @@ public class RouteMenu {
 
         do {
             // display title
-            UIHelper.printTitle("Manage Train Routes");
+            ConsoleUtils.printTitle("Manage Train Routes");
 
             // display menu choices
             System.out.println("1. Add Train Route");
@@ -38,7 +39,7 @@ public class RouteMenu {
             System.out.println("4. Display All Train Routes");
             System.out.println("0. Back\n");
 
-            choice = UIHelper.getMenuChoice(scanner, 4);
+            choice = InputUtils.getMenuChoice(scanner, 4);
 
             switch (choice) {
                 case 1:
@@ -66,7 +67,7 @@ public class RouteMenu {
 
     private void addTrainRouteScreen() {
         // display title
-        UIHelper.printTitle("Add Train Route");
+        ConsoleUtils.printTitle("Add Train Route");
 
         // ask user input source station code
         System.out.print("Enter Source Station Code: ");
@@ -77,15 +78,15 @@ public class RouteMenu {
         String destinationCode = scanner.nextLine().trim().toUpperCase();
 
         // travel duration in minutes
-        int duration = UIHelper.getPositiveInteger(scanner, "Enter Travel Duration (minutes): ");
+        int duration = InputUtils.getPositiveInteger(scanner, "Enter Travel Duration (minutes): ");
 
         // travel duration in minutes
-        double ticketFare = UIHelper.getPositiveDouble(scanner, "Enter Ticket Fare (RM): ");
+        double ticketFare = InputUtils.getPositiveDouble(scanner, "Enter Ticket Fare (RM): ");
 
         // display route
         System.out.println("\nRoute:");
         System.out.println(sourceCode + " -> " + destinationCode);
-        System.out.println("Duration: " + duration + " minutes");
+        System.out.println("Duration: " + ConsoleUtils.formatDuration(duration));
         System.out.printf("Ticket Fare: RM %.2f%n", ticketFare);
 
         // get source station and destination station based on the station code
@@ -93,31 +94,31 @@ public class RouteMenu {
         Station destination = graph.getStationByCode(destinationCode);
 
         // confirmation
-        boolean confirmation = UIHelper.getConfirmation(scanner, "\nAdd this route?");
+        boolean confirmation = InputUtils.getConfirmation(scanner, "\nAdd this route?");
         if (confirmation) {
             // confirm add
             if (source == null || destination == null) {
                 // source or destination not found
-                UIHelper.printError("Source or destination station not found.");
-                UIHelper.pause(scanner);
+                ConsoleUtils.printError("Source or destination station not found.");
+                ConsoleUtils.pause(scanner);
                 return;
             }
 
             if (graph.addEdge(source, destination, duration, ticketFare)) {
                 // add successfully
-                UIHelper.printSuccess("Train route (" + sourceCode + " -> " + destinationCode + ") added successfully.");
-                UIHelper.pause(scanner);
+                ConsoleUtils.printSuccess("Train route (" + sourceCode + " -> " + destinationCode + ") added successfully.");
+                ConsoleUtils.pause(scanner);
             } else {
                 // route has already exists
-                UIHelper.printError("Train route (" + sourceCode + " -> " + destinationCode + ") already exists.");
-                UIHelper.pause(scanner);
+                ConsoleUtils.printError("Train route (" + sourceCode + " -> " + destinationCode + ") already exists.");
+                ConsoleUtils.pause(scanner);
             }
         }
     }
 
     private void removeTrainRouteScreen() {
         // display title
-        UIHelper.printTitle("Remove Train Route");
+        ConsoleUtils.printTitle("Remove Train Route");
 
         // ask user input source station code
         System.out.print("Enter Source Station Code: ");
@@ -134,8 +135,8 @@ public class RouteMenu {
         if (source == null || destination == null) {
             // source or destination station not found
             // source or destination not found
-            UIHelper.printError("Source or destination station not found.");
-            UIHelper.pause(scanner);
+            ConsoleUtils.printError("Source or destination station not found.");
+            ConsoleUtils.pause(scanner);
             return;
         }
 
@@ -143,32 +144,32 @@ public class RouteMenu {
         TrainEdge<Station> route = graph.getEdge(source, destination);
 
         if (route == null) {
-            UIHelper.printError("Tain route not found...");
-            UIHelper.pause(scanner);
+            ConsoleUtils.printError("Tain route not found...");
+            ConsoleUtils.pause(scanner);
             return;
         }
 
         // display route information
         System.out.println("\nRoute Found: ");
         System.out.println(sourceCode + " -> " + destinationCode);
-        System.out.println("Duration: " + route.getDuration() + " minutes");
+        System.out.println("Duration: " + ConsoleUtils.formatDuration(route.getDuration()));
         System.out.printf("Ticket Fare: RM %.2f%n", route.getPrice());
 
         // confirmation
-        boolean confirmation = UIHelper.getConfirmation(scanner, "\nRemove this route?");
+        boolean confirmation = InputUtils.getConfirmation(scanner, "\nRemove this route?");
         if (confirmation) {
             // remove confirmed
             if (graph.removeEdge(source, destination)) {
                 // successful
-                UIHelper.printSuccess("Train route (" + sourceCode + " -> " + destinationCode + ") removed successfully.");
-                UIHelper.pause(scanner);
+                ConsoleUtils.printSuccess("Train route (" + sourceCode + " -> " + destinationCode + ") removed successfully.");
+                ConsoleUtils.pause(scanner);
             }
         }
     }
 
     private void checkDirectTrainRouteScreen() {
         // title
-        UIHelper.printTitle("Check Direct Train Route");
+        ConsoleUtils.printTitle("Check Direct Train Route");
 
         // ask user input source station code
         System.out.print("Enter Source Station Code: ");
@@ -185,8 +186,8 @@ public class RouteMenu {
         if (source == null || destination == null) {
             // source or destination station not found
             // source or destination not found
-            UIHelper.printError("Source or destination station not found.");
-            UIHelper.pause(scanner);
+            ConsoleUtils.printError("Source or destination station not found.");
+            ConsoleUtils.pause(scanner);
             return;
         }
 
@@ -194,23 +195,23 @@ public class RouteMenu {
         TrainEdge<Station> route = graph.getEdge(source, destination);
 
         if (route == null) {
-            UIHelper.printError("Tain route not found...");
-            UIHelper.pause(scanner);
+            ConsoleUtils.printError("Tain route not found...");
+            ConsoleUtils.pause(scanner);
             return;
         }
 
         // display route information
         System.out.println("\nRoute Found: ");
         System.out.println(sourceCode + " -> " + destinationCode);
-        System.out.println("Duration: " + route.getDuration() + " minutes");
+        System.out.println("Duration: " + ConsoleUtils.formatDuration(route.getDuration()));
         System.out.printf("Ticket Fare: RM %.2f%n", route.getPrice());
 
-        UIHelper.pause(scanner);
+        ConsoleUtils.pause(scanner);
     }
 
     private void displayAllTrainRoutesScreen() {
         // title
-        UIHelper.printTitle("Display All Train Routes");
+        ConsoleUtils.printTitle("Display All Train Routes");
 
         int number = 1;
         // print table header
@@ -224,7 +225,7 @@ public class RouteMenu {
         );
 
         // divider
-        UIHelper.printLine();
+        ConsoleUtils.printLine();
 
         for (Station source : graph.getVertices()) {
             // get all edges from the source station
@@ -233,18 +234,18 @@ public class RouteMenu {
             for (TrainEdge<Station> route : routes) {
                 // display route information
                 System.out.printf(
-                        "%-5d %-8s %-8s %3d min      RM %7.2f%n",
+                        "%-5d %-8s %-8s %8s     RM %7.2f%n",
                         number++,
                         source.getStationCode(),
                         route.getDestination().getStationCode(),
-                        route.getDuration(),
+                        ConsoleUtils.formatDuration(route.getDuration()),
                         route.getPrice()
                 );
             }
         }
         // divider
-        UIHelper.printLine();
+        ConsoleUtils.printLine();
         System.out.println("Total Routes: " + (number - 1));
-        UIHelper.pause(scanner);
+        ConsoleUtils.pause(scanner);
     }
 }

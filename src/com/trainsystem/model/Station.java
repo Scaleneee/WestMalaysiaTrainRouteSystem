@@ -8,8 +8,8 @@ public class Station {
 
     // constructors
     public Station(String stationCode, String stationName) {
-        this.stationCode = stationCode;
-        this.stationName = stationName;
+        this.stationCode = stationCode.trim().toUpperCase();
+        this.stationName = stationName.trim();
     }
 
     public Station() {
