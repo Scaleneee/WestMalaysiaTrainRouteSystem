@@ -2,7 +2,8 @@ package com.trainsystem.ui.screen;
 
 import com.trainsystem.graph.TrainGraph;
 import com.trainsystem.model.Station;
-import com.trainsystem.ui.UIHelper;
+import com.trainsystem.ui.utils.ConsoleUtils;
+import com.trainsystem.ui.utils.InputUtils;
 
 import java.util.Scanner;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class StationMenu {
         int choice = 0;
         do {
             // display title
-            UIHelper.printTitle("Manage Train Stations");
+            ConsoleUtils.printTitle("Manage Train Stations");
 
             // display menu choices
             System.out.println("1. Add Train Station");
@@ -36,7 +37,7 @@ public class StationMenu {
             System.out.println("4. Display All Train Station");
             System.out.println("0. Back\n");
 
-            choice = UIHelper.getMenuChoice(scanner, 4);
+            choice = InputUtils.getMenuChoice(scanner, 4);
 
             switch (choice) {
                 case 1:
@@ -64,7 +65,7 @@ public class StationMenu {
 
     private void addTrainStationScreen() {
         // display title
-        UIHelper.printTitle("Add Train Station");
+        ConsoleUtils.printTitle("Add Train Station");
 
         // ask user input the station code
         System.out.print("Enter Station Code: ");
@@ -75,7 +76,7 @@ public class StationMenu {
         String stationName = scanner.nextLine().trim().toUpperCase();
 
         // confirmation message
-        boolean confirmation = UIHelper.getConfirmation(scanner, "\nAdd this station?");
+        boolean confirmation = InputUtils.getConfirmation(scanner, "\nAdd this station?");
 
         // create station variable
         Station station = new Station(stationCode, stationName);
@@ -83,19 +84,19 @@ public class StationMenu {
             // add station confirmed
             if (graph.addVertex(station)) {
                 // add successfully
-                UIHelper.printSuccess("Station (" + station + ") added successfully.");
+                ConsoleUtils.printSuccess("Station (" + station + ") added successfully.");
             } else {
-                UIHelper.printError("Station (" + station + ") already exists.");
+                ConsoleUtils.printError("Station (" + station + ") already exists.");
             }
         }
         // add station canceled
         // back to the previous screen
-        UIHelper.pause(scanner);
+        ConsoleUtils.pause(scanner);
     }
 
     private void removeTrainStationScreen() {
         // display title
-        UIHelper.printTitle("Remove Train Station");
+        ConsoleUtils.printTitle("Remove Train Station");
 
         // ask user input the station code
         System.out.print("Enter Station Code: ");
@@ -110,29 +111,29 @@ public class StationMenu {
             System.out.println("Code: " + station.getStationCode());
             System.out.println("Name: " + station.getStationName());
         } else {
-            UIHelper.printError("Station not found.");
-            UIHelper.pause(scanner);
+            ConsoleUtils.printError("Station not found.");
+            ConsoleUtils.pause(scanner);
             return;
         }
 
         // display warning message
-        UIHelper.printWarning("Removing this station will also remove all routes connected to this station.\n");
+        ConsoleUtils.printWarning("Removing this station will also remove all routes connected to this station.\n");
 
         // confirmation
-        boolean confirmation = UIHelper.getConfirmation(scanner, "Remove this station?");
+        boolean confirmation = InputUtils.getConfirmation(scanner, "Remove this station?");
 
         if (confirmation) {
             // remove confirmed
             if (graph.removeVertex(station)) {
-                UIHelper.printSuccess("Station removed successfully.");
-                UIHelper.pause(scanner);
+                ConsoleUtils.printSuccess("Station removed successfully.");
+                ConsoleUtils.pause(scanner);
             }
         }
     }
 
     private void checkTrainStationScreen() {
         // display title
-        UIHelper.printTitle("Check Train Station");
+        ConsoleUtils.printTitle("Check Train Station");
 
         // ask user input the station code
         System.out.print("Enter Station Code: ");
@@ -146,23 +147,23 @@ public class StationMenu {
             System.out.println("Station Found:");
             System.out.println("Code: " + station.getStationCode());
             System.out.println("Name: " + station.getStationName());
-            UIHelper.pause(scanner);
+            ConsoleUtils.pause(scanner);
         } else {
-            UIHelper.printError("Station not found.");
-            UIHelper.pause(scanner);
+            ConsoleUtils.printError("Station not found.");
+            ConsoleUtils.pause(scanner);
         }
     }
 
     private void displayAllStationsScreen() {
         // display title
-        UIHelper.printTitle("All Train Stations");
+        ConsoleUtils.printTitle("All Train Stations");
 
         // get all stations from the graph
         Set<Station> stations = graph.getVertices();
 
         // if no any station found in graph
         if (stations.isEmpty()) {
-            UIHelper.printError("No train stations found.");
+            ConsoleUtils.printError("No train stations found.");
             return;
         }
 
@@ -174,7 +175,7 @@ public class StationMenu {
         );
 
         // divider
-        UIHelper.printLine();
+        ConsoleUtils.printLine();
 
         // display stations
         int number = 1;
@@ -188,10 +189,10 @@ public class StationMenu {
 
             number++;
         }
-        UIHelper.printLine();
+        ConsoleUtils.printLine();
 
         // display total stations
         System.out.println("Total stations: " + graph.getSize());
-        UIHelper.pause(scanner);
+        ConsoleUtils.pause(scanner);
     }
 }

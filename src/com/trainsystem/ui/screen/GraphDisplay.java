@@ -1,7 +1,7 @@
 package com.trainsystem.ui.screen;
 
 import com.trainsystem.graph.TrainGraph;
-import com.trainsystem.ui.UIHelper;
+import com.trainsystem.ui.utils.ConsoleUtils;
 
 import java.util.Scanner;
 
@@ -21,7 +21,7 @@ public class GraphDisplay {
      */
     public void start() {
         // title
-        UIHelper.printTitle("DISPLAY TRAIN NETWORK");
+        ConsoleUtils.printTitle("DISPLAY TRAIN NETWORK");
 
         // show information of graph
         System.out.println("Opening train network visualization...");
@@ -33,11 +33,11 @@ public class GraphDisplay {
 //        showGraph();
 
         // show info
-        UIHelper.printInfo(
+        ConsoleUtils.printInfo(
                 "Train network opened in a new window."
         );
 
-        UIHelper.pause(scanner);
+        ConsoleUtils.pause(scanner);
     }
 
     // to display the entire graph in new window

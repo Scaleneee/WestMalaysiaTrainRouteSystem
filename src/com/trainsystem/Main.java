@@ -3,13 +3,13 @@ package com.trainsystem;
 import com.trainsystem.graph.TrainGraph;
 
 import java.util.Scanner;
-import java.util.Set;
 
 import com.trainsystem.model.Station;
-import com.trainsystem.ui.UIHelper;
+import com.trainsystem.ui.utils.ConsoleUtils;
 import com.trainsystem.ui.screen.GraphDisplay;
 import com.trainsystem.ui.screen.RouteMenu;
 import com.trainsystem.ui.screen.StationMenu;
+import com.trainsystem.ui.utils.InputUtils;
 
 public class Main {
 
@@ -167,7 +167,7 @@ public class Main {
         int choice = 0;
         do {
             // display title
-            UIHelper.printTitle("Train Route Management System");
+            ConsoleUtils.printTitle("Train Route Management System");
 
             // display menu choices
             System.out.println("1. Manage Train Stations");
@@ -177,7 +177,7 @@ public class Main {
             System.out.println("0. Exit\n");
 
             // get user choice
-            choice = UIHelper.getMenuChoice(SCANNER, 4);
+            choice = InputUtils.getMenuChoice(SCANNER, 4);
 
             switch (choice) {
                 case 1:
@@ -201,6 +201,4 @@ public class Main {
             }
         } while (choice != 0);
     }
-
-
 }
