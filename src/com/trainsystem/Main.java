@@ -3,10 +3,8 @@ package com.trainsystem;
 import com.trainsystem.data.TrainNetworkData;
 import com.trainsystem.graph.TrainGraph;
 
-import java.util.List;
 import java.util.Scanner;
 
-import com.trainsystem.model.Station;
 import com.trainsystem.ui.screen.GraphDisplay;
 import com.trainsystem.ui.screen.RouteMenu;
 import com.trainsystem.ui.screen.SearchRouteMenu;
