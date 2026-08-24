@@ -3,6 +3,8 @@ package com.trainsystem.data;
 import com.trainsystem.graph.TrainGraph;
 import com.trainsystem.model.Station;
 
+import java.util.List;
+
 public class TrainNetworkData {
 
     public static void initialize(TrainGraph graph) {
