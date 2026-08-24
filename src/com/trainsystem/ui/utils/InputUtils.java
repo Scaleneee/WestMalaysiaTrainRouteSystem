@@ -32,12 +32,13 @@ public class InputUtils {
     }
 
     public static boolean getConfirmation(Scanner scanner, String message) {
-
         while (true) {
             System.out.print(message + " [Y/N] : ");
 
+            // get user input
             String input = scanner.nextLine().trim();
 
+            // if == 'Y' or == 'N', valid input
             if (input.equalsIgnoreCase("Y")) {
                 return true;
             }
@@ -46,6 +47,7 @@ public class InputUtils {
                 return false;
             }
 
+            // if not 'Y' or 'N' prompt msg and ask them to enter again
             System.out.println("Please enter Y or N.");
         }
     }

@@ -144,7 +144,7 @@ public class RouteMenu {
         TrainEdge<Station> route = graph.getEdge(source, destination);
 
         if (route == null) {
-            ConsoleUtils.printError("Tain route not found...");
+            ConsoleUtils.printError("Tain route not found.");
             ConsoleUtils.pause(scanner);
             return;
         }
@@ -195,7 +195,7 @@ public class RouteMenu {
         TrainEdge<Station> route = graph.getEdge(source, destination);
 
         if (route == null) {
-            ConsoleUtils.printError("Tain route not found...");
+            ConsoleUtils.printError("Tain route not found.");
             ConsoleUtils.pause(scanner);
             return;
         }

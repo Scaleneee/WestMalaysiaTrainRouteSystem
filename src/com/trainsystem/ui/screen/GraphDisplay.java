@@ -30,7 +30,7 @@ public class GraphDisplay {
         System.out.println("Routes   : " + graph.getEdgeCount());
 
         // create new window and display the graph
-//        showGraph();
+        showGraph();
 
         // show info
         ConsoleUtils.printInfo(
@@ -42,6 +42,6 @@ public class GraphDisplay {
 
     // to display the entire graph in new window
     private void showGraph() {
-
+        TrainNetworkWindow.showNetwork(graph);
     }
 }

@@ -17,13 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * display the train graph network in a new window using Swing
+ */
 public class TrainNetworkWindow extends JFrame {
 
-    private final TrainGraph graph;
-
     public TrainNetworkWindow(TrainGraph graph) {
-
-        this.graph = graph;
 
         setTitle("West Malaysia Train Network");
         setSize(1450, 900);

@@ -167,6 +167,7 @@ public class StationMenu {
             return;
         }
 
+        // print the table header
         System.out.printf(
                 "%-6s %-10s %-25s%n",
                 "No.",

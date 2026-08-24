@@ -202,11 +202,73 @@ public class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
 
     @Override
     public void clear() {
+        // clear the whole map
         adjacencyList.clear();
     }
 
     @Override
     public List<V> bfs(V start, V destination) {
-        return List.of();
+        // new list to store the path result
+        List<V> path = new ArrayList<>();
+
+        // validate start and destination station
+        if (!containsVertex(start) || !containsVertex(destination)) {
+            // return an empty list
+            return path;
+        }
+
+        // store the execution information
+        Queue<V> queue = new LinkedList<>();
+        Set<V> visited = new HashSet<>();
+        Map<V, V> parent = new HashMap<>();
+
+        queue.offer(start);
+        visited.add(start);
+
+        while (!queue.isEmpty()) {
+            V current = queue.poll();
+
+            // destination found
+            if (current.equals(destination)) {
+                break;
+            }
+
+            // visit all adjacent vertices
+            for (E edge : getEdges(current)) {
+                V neighbor = edge.getDestination();
+
+                // if the neighbor vertex not visit yet
+                if (!visited.contains(neighbor)) {
+                    // mark as visited
+                    visited.add(neighbor);
+                    parent.put(neighbor, current);
+                    queue.offer(neighbor);
+                }
+            }
+        }
+
+        // no path found
+        if (!visited.contains(destination)) {
+            // return empty list
+            return path;
+        }
+
+        // build path from destination back to start
+        V current = destination;
+
+        while (current != null) {
+            path.add(current);
+
+            if (current.equals(start)) {
+                break;
+            }
+
+            current = parent.get(current);
+        }
+        // reverse to start -> destination
+        Collections.reverse(path);
+
+        // return the path result
+        return path;
     }
 }
