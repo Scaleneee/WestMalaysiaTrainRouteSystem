@@ -89,6 +89,14 @@ public class SearchRouteMenu {
             return;
         }
 
+        // if source and destination station are same
+        if (source.equals(destination)) {
+            // show error msg
+            ConsoleUtils.printError("Source and destination station cannot be the same.");
+            ConsoleUtils.pause(scanner);
+            return;
+        }
+
         // perform search algorithm based on the search method
         List<Station> path = searchMethod.equals("bfs") ? graph.bfs(source, destination) :
                 searchMethod.equals("fastest") ? graph.findFastestRoute(source, destination) :
