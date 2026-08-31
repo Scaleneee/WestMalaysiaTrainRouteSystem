@@ -5,6 +5,8 @@ import com.trainsystem.model.Station;
 import com.trainsystem.ui.utils.ConsoleUtils;
 import com.trainsystem.ui.utils.InputUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -142,11 +144,28 @@ public class StationMenu {
         // search station, to know whether exists or not
         Station station = graph.searchStation(stationCode);
 
+        // declare a list to store the neighbors of the station
+        List<Station> neighbors = new ArrayList<>();
+
         // display station message
         if (station != null) {
             System.out.println("Station Found:");
             System.out.println("Code: " + station.getStationCode());
             System.out.println("Name: " + station.getStationName());
+
+            // get all the neighbors of the station
+            neighbors = graph.getNeighbors(station);
+
+            // display neighbors
+            System.out.print("Neighbors: ");
+            for (int i = 0; i < neighbors.size(); i++) {
+                System.out.print(neighbors.get(i).getStationCode());
+                if (i != neighbors.size() - 1) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println();
+
             ConsoleUtils.pause(scanner);
         } else {
             ConsoleUtils.printError("Station not found.");
